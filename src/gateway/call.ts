@@ -16,6 +16,7 @@ import {
 } from "../utils/message-channel.js";
 import { loadGatewayTlsRuntime } from "../infra/tls/gateway.js";
 import { GatewayClient } from "./client.js";
+import { canDispatchInProcess, dispatchInProcess } from "./in-process-dispatch.js";
 import { PROTOCOL_VERSION } from "./protocol/index.js";
 
 export type CallGatewayOptions = {
@@ -110,6 +111,12 @@ export function buildGatewayConnectionDetails(
 }
 
 export async function callGateway<T = unknown>(opts: CallGatewayOptions): Promise<T> {
+  // When in-process dispatch is enabled and the method is supported, bypass
+  // the WebSocket connection and handle locally.
+  if (canDispatchInProcess(opts.method)) {
+    return dispatchInProcess<T>(opts.method, opts.params);
+  }
+
   const timeoutMs = opts.timeoutMs ?? 10_000;
   const config = opts.config ?? loadConfig();
   const isRemoteMode = config.gateway?.mode === "remote";

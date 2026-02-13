@@ -148,6 +148,11 @@ export async function startGatewayServer(
   port = 18789,
   opts: GatewayServerOptions = {},
 ): Promise<GatewayServer> {
+  // Enable in-process dispatch so that tools like sessions_spawn can call
+  // callGateway without a WebSocket round-trip when running inside the gateway.
+  const { enableInProcessGateway } = await import("./in-process-dispatch.js");
+  enableInProcessGateway();
+
   // Ensure all default port derivations (browser/canvas) see the actual runtime port.
   process.env.OPENCLAW_GATEWAY_PORT = String(port);
   logAcceptedEnvOption({
