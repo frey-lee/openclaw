@@ -9,7 +9,6 @@ import {
   listChannelPluginCatalogEntries,
 } from "../channels/plugins/catalog.js";
 import { normalizeProviderId } from "../agents/model-selection.js";
-import { hasAnyWhatsAppAuth } from "../web/accounts.js";
 
 type PluginEnableChange = {
   pluginId: string;
@@ -130,7 +129,6 @@ function isIMessageConfigured(cfg: OpenClawConfig): boolean {
 }
 
 function isWhatsAppConfigured(cfg: OpenClawConfig): boolean {
-  if (hasAnyWhatsAppAuth(cfg)) return true;
   const entry = resolveChannelConfig(cfg, "whatsapp");
   if (!entry) return false;
   return recordHasKeys(entry);

@@ -3,16 +3,16 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { logVerbose, shouldLogVerbose } from "../globals.js";
-import { type MediaKind, maxBytesForKind, mediaKindFromMime } from "../media/constants.js";
+import { type MediaKind, maxBytesForKind, mediaKindFromMime } from "./constants.js";
 import { resolveUserPath } from "../utils.js";
-import { fetchRemoteMedia } from "../media/fetch.js";
+import { fetchRemoteMedia } from "./fetch.js";
 import {
   convertHeicToJpeg,
   hasAlphaChannel,
   optimizeImageToPng,
   resizeToJpeg,
-} from "../media/image-ops.js";
-import { detectMime, extensionForMime } from "../media/mime.js";
+} from "./image-ops.js";
+import { detectMime, extensionForMime } from "./mime.js";
 
 export type WebMediaResult = {
   buffer: Buffer;
@@ -112,7 +112,6 @@ async function loadWebMediaInternal(
   options: WebMediaOptions = {},
 ): Promise<WebMediaResult> {
   const { maxBytes, optimizeImages = true } = options;
-  // Use fileURLToPath for proper handling of file:// URLs (handles file://localhost/path, etc.)
   if (mediaUrl.startsWith("file://")) {
     try {
       mediaUrl = fileURLToPath(mediaUrl);
@@ -154,8 +153,6 @@ async function loadWebMediaInternal(
     kind: MediaKind;
     fileName?: string;
   }): Promise<WebMediaResult> => {
-    // If caller explicitly provides maxBytes, trust it (for channels that handle large files).
-    // Otherwise fall back to per-kind defaults.
     const cap = maxBytes !== undefined ? maxBytes : maxBytesForKind(params.kind);
     if (params.kind === "image") {
       const isGif = params.contentType === "image/gif";
@@ -195,12 +192,10 @@ async function loadWebMediaInternal(
     return await clampAndFinalize({ buffer, contentType, kind, fileName });
   }
 
-  // Expand tilde paths to absolute paths (e.g., ~/Downloads/photo.jpg)
   if (mediaUrl.startsWith("~")) {
     mediaUrl = resolveUserPath(mediaUrl);
   }
 
-  // Local path
   const data = await fs.readFile(mediaUrl);
   const mime = await detectMime({ buffer: data, filePath: mediaUrl });
   const kind = mediaKindFromMime(mime);
@@ -244,7 +239,6 @@ export async function optimizeImageToJpeg(
   resizeSide: number;
   quality: number;
 }> {
-  // Try a grid of sizes/qualities until under the limit.
   let source = buffer;
   if (isHeicSource(opts)) {
     try {

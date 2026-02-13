@@ -1,4 +1,9 @@
-export type { DirectoryConfigParams } from "./plugins/directory-config.js";
+export type DirectoryConfigParams = {
+  cfg: unknown;
+  accountId?: string | null;
+  query?: string | null;
+  limit?: number | null;
+};
 export type { ChannelDirectoryEntry } from "./plugins/types.js";
 
 export type MessagingTargetKind = "user" | "channel";

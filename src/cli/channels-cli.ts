@@ -2,7 +2,6 @@ import type { Command } from "commander";
 import { formatCliChannelOptions } from "./channel-options.js";
 import {
   channelsAddCommand,
-  channelsCapabilitiesCommand,
   channelsListCommand,
   channelsLogsCommand,
   channelsRemoveCommand,
@@ -100,20 +99,6 @@ export function registerChannelsCli(program: Command) {
     .action(async (opts) => {
       await runChannelsCommand(async () => {
         await channelsStatusCommand(opts, defaultRuntime);
-      });
-    });
-
-  channels
-    .command("capabilities")
-    .description("Show provider capabilities (intents/scopes + supported features)")
-    .option("--channel <name>", `Channel (${formatCliChannelOptions(["all"])})`)
-    .option("--account <id>", "Account id (only with --channel)")
-    .option("--target <dest>", "Channel target for permission audit (Discord channel:<id>)")
-    .option("--timeout <ms>", "Timeout in ms", "10000")
-    .option("--json", "Output JSON", false)
-    .action(async (opts) => {
-      await runChannelsCommand(async () => {
-        await channelsCapabilitiesCommand(opts, defaultRuntime);
       });
     });
 

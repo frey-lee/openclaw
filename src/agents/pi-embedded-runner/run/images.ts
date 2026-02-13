@@ -6,10 +6,25 @@ import type { ImageContent } from "@mariozechner/pi-ai";
 
 import { assertSandboxPath } from "../../sandbox-paths.js";
 import { sanitizeImageBlocks } from "../../tool-images.js";
-import { extractTextFromMessage } from "../../../tui/tui-formatters.js";
-import { loadWebMedia } from "../../../web/media.js";
+import { loadWebMedia } from "../../../media/load.js";
 import { resolveUserPath } from "../../../utils.js";
 import { log } from "../logger.js";
+
+function extractTextFromMessage(message: unknown): string {
+  if (!message || typeof message !== "object") return "";
+  const content = (message as Record<string, unknown>).content;
+  if (typeof content === "string") return content.trim();
+  if (!Array.isArray(content)) return "";
+  const parts: string[] = [];
+  for (const block of content) {
+    if (!block || typeof block !== "object") continue;
+    const rec = block as Record<string, unknown>;
+    if (rec.type === "text" && typeof rec.text === "string") {
+      parts.push(rec.text);
+    }
+  }
+  return parts.join("\n").trim();
+}
 
 /**
  * Common image file extensions for detection.

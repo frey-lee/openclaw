@@ -525,22 +525,6 @@ vi.mock("../commands/health.js", () => ({
 vi.mock("../commands/status.js", () => ({
   getStatusSummary: vi.fn().mockResolvedValue({ ok: true }),
 }));
-vi.mock("../web/outbound.js", () => ({
-  sendMessageWhatsApp: (...args: unknown[]) =>
-    (hoisted.sendWhatsAppMock as (...args: unknown[]) => unknown)(...args),
-  sendPollWhatsApp: (...args: unknown[]) =>
-    (hoisted.sendWhatsAppMock as (...args: unknown[]) => unknown)(...args),
-}));
-vi.mock("../channels/web/index.js", async () => {
-  const actual = await vi.importActual<typeof import("../channels/web/index.js")>(
-    "../channels/web/index.js",
-  );
-  return {
-    ...actual,
-    sendMessageWhatsApp: (...args: unknown[]) =>
-      (hoisted.sendWhatsAppMock as (...args: unknown[]) => unknown)(...args),
-  };
-});
 vi.mock("../commands/agent.js", () => ({
   agentCommand,
 }));
@@ -549,14 +533,9 @@ vi.mock("../auto-reply/reply.js", () => ({
 }));
 vi.mock("../cli/deps.js", async () => {
   const actual = await vi.importActual<typeof import("../cli/deps.js")>("../cli/deps.js");
-  const base = actual.createDefaultDeps();
   return {
     ...actual,
-    createDefaultDeps: () => ({
-      ...base,
-      sendMessageWhatsApp: (...args: unknown[]) =>
-        (hoisted.sendWhatsAppMock as (...args: unknown[]) => unknown)(...args),
-    }),
+    createDefaultDeps: () => actual.createDefaultDeps(),
   };
 });
 
