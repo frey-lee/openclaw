@@ -1,0 +1,15 @@
+Include:
+1) scrubAnthropicRefusalMagic to prevent transcript poisoning if possible
+2) Context window management, Context overflow (run.ts:363-420): Attempts auto-compaction via compactEmbeddedPiSessionDirect()
+3) Sandbox resolution (attempt.ts:147-157): Resolves sandbox context, potentially redirecting the workspace directory.
+4) Skills & environment (attempt.ts:162-181): Loads workspace skill entries, applies skill environment overrides, resolves skills prompt text.
+5) Bootstrap files (attempt.ts:184-196): Loads workspace context files (e.g., AGENTS.md, project docs) via resolveBootstrapContextForRun().
+6) Tool creation (attempt.ts:202-237): Calls createOpenClawCodingTools() to build the full tool set, then sanitizes for Google models. Tools are split into builtInTools and customTools via splitSdkTools() (attempt.ts:435-438).
+7) System prompt construction (attempt.ts:337-385): Builds the system prompt via buildEmbeddedSystemPrompt(), incorporating workspace info, thinking level, skills, docs path, sandbox info, channel capabilities, etc.
+8) Session creation (attempt.ts:450-465): Calls createAgentSession() from @mariozechner/pi-coding-agent
+
+Exclude:
+1) Authentication
+2) Model selection, just use llmaas (curl request or python openai request)
+3) Usage tracking, no usage limit
+4) 

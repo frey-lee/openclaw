@@ -1,0 +1,44 @@
+{
+  "Work complete!": {
+    "key": "completion_1",
+    "filename": "work_complete.wav",
+    "text": "Work complete!",
+    "original_hash": "fedf92ce"
+  },
+  "All done!": {
+    "key": "completion_2",
+    "filename": "all_done.wav",
+    "text": "All done!",
+    "original_hash": "62898281"
+  },
+  "Task finished!": {
+    "key": "completion_3",
+    "filename": "task_finished.wav",
+    "text": "Task finished!",
+    "original_hash": "1d5db7a1"
+  },
+  "Job complete!": {
+    "key": "completion_4",
+    "filename": "job_complete.wav",
+    "text": "Job complete!",
+    "original_hash": "1ddb87cc"
+  },
+  "Ready for next task!": {
+    "key": "completion_5",
+    "filename": "ready_for_next_task.wav",
+    "text": "Ready for next task!",
+    "original_hash": "47bc9f32"
+  },
+  "Your agent needs your input": {
+    "key": "notification_input",
+    "filename": "your_agent_needs_your_input.wav",
+    "text": "Your agent needs your input",
+    "original_hash": "5ec34095"
+  },
+  "Subagent Complete": {
+    "key": "subagent_complete",
+    "filename": "subagent_complete.wav",
+    "text": "Subagent Complete",
+    "original_hash": "8b5e67b7"
+  }
+}

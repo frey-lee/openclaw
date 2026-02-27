@@ -71,3 +71,9 @@ USER.md
 
 # local tooling
 .serena/
+
+# AI workdir logs (hook output)
+AI_workdir/logs/
+
+# Windows artifacts
+nul

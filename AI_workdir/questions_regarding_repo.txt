@@ -1,0 +1,28 @@
+1) workspaceDir is the specified local directory which the tools can access? how does it work? does it limit the bash/read/write commands to certain paths? sandbox resolution?
+2) how do bash/read/write commands work, how does the agent get access to the shell/terminal
+3) what is onPartialReply?, onBlockReply?, on onBlockReplyFlush?, onReasoningStream?, onToolResult?, and onAgentEvent?
+4) difference between EmbeddedPiRunResult and EmbeddedRunAttemptResult
+5) whats the purpose of the global lane queue? how does a task move from session queue to global queue, what's in a task, isn't there duplication of work? or is global lane just tracking progress of session lane
+6) can i run scrubAnthropicRefusalMagic even without anthropic key? do you know how it works?
+7) How does autocompaction work?
+8) Role ordering errors (run.ts:422-443), what is this about?
+9) what happens in the core retry loop, how many max retries 
+10) Run is the outer loop, run attempt is the inner loop?
+11) System prompt construction (attempt.ts:337-385): Builds the system prompt via buildEmbeddedSystemPrompt() how is this done?
+12) need to understand @mariozechner/pi-coding-agent, how it dels with resolvedWorkspace, thinkingLevel, system prompt, tools, custom tools, skills, context files, additional extension paths
+13) what are these/ The session object provides .prompt(), .abort(), .steer(), .subscribe(), .messages, .isStreaming, .agent, and .dispose()
+14) what is this: Stream function override (attempt.ts:493): Forces activeSession.agent.streamFn = streamSimple
+15) History sanitization (attempt.ts:518-546): Sanitizes existing session history:
+
+sanitizeSessionHistory() - provider-specific cleanup
+validateGeminiTurns() / validateAnthropicTurns() - structural validation
+limitHistoryTurns() - caps history length per config
+Replaces agent messages if modified what is this?
+16) Event subscription (attempt.ts:597-626) what is this?
+17) Active run registration (attempt.ts:636): setActiveEmbeddedRun()  what is this?
+18) Prompt execution (attempt.ts:782-785): activeSession.prompt() triggers the pi-runner's internal loop: send to LLM -> receive response -> if tool calls, execute tools -> send results back to LLM -> repeat until done. The abortable() wrapper allows the timeout/abort system to interrupt. what is the repeat loop like and when does it abort?
+19) What are hooks? Hooks (attempt.ts:687-711, 814-833):
+20) What is this for? Compaction retry wait (attempt.ts:794-802)
+21) Result extraction (attempt.ts:842-873): Extracts the last assistant message, normalizes tool metas, what is normalizing tool meta?
+22) does pi-coding-agent handle skills?
+

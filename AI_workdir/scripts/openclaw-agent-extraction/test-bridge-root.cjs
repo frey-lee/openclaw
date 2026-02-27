@@ -1,0 +1,28 @@
+const { WebSocket } = require('ws');
+const ws = new WebSocket('ws://localhost:18789');
+let gotData = false;
+ws.on('open', () => console.log('[test] connected'));
+ws.on('message', (data) => {
+  const msg = JSON.parse(data.toString());
+  if (msg.type === 'connected') {
+    console.log('[test] session:', msg.sessionId);
+    const prompt = process.argv[2] || 'Hello, say hi back in one sentence.';
+    ws.send(JSON.stringify({ type: 'chat', text: prompt }));
+    console.log('[test] sent:', prompt.slice(0, 80));
+  } else if (msg.type === 'text_delta') {
+    if (!gotData) { console.log('[test] receiving response:'); gotData = true; }
+    process.stdout.write(msg.text || '');
+  } else if (msg.type === 'done') {
+    console.log('\n[test] DONE');
+    if (msg.meta) console.log('[test] meta:', JSON.stringify(msg.meta));
+    ws.close();
+  } else if (msg.type === 'error') {
+    console.log('[test] ERROR:', msg.text);
+    ws.close();
+  } else {
+    console.log('[test] other:', JSON.stringify(msg).slice(0, 200));
+  }
+});
+ws.on('error', (err) => console.error('[test] ws error:', err.message));
+ws.on('close', (code) => { console.log('[test] closed code=' + code); process.exit(0); });
+setTimeout(() => { console.log('[test] timeout'); process.exit(1); }, 120000);
