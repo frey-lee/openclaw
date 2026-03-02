@@ -639,6 +639,51 @@ The openclaw-agent bridge (TypeScript WebSocket server + Streamlit Python UI) is
 
 ---
 
+## Prompts Design Doc + Bootstrap Corrections — COMPLETED (2026-03-02)
+
+### Project Summary
+Created a new cross-cutting design doc (`prompts.md`) addressing how the LLM prompt system drives agent behavior, and corrected inaccuracies in the existing `bootstrap.md` design doc.
+
+**Repos**: openclaw-agent (`design_docs/`)
+
+### New Design Doc: `prompts.md`
+
+**File**: `openclaw-agent/design_docs/prompts.md`
+
+Addresses specific questions about the prompt system, with cross-references to existing design docs:
+
+| Section | Topic |
+|---------|-------|
+| 1. Anatomy of What the LLM Receives | Full system prompt section table (13 sections in order), conversation history structure |
+| 2. How the Agent Decides Between Skills and Tools | LLM sees both; skills section is "mandatory" but soft-enforced via prompt instruction; skills guide tool usage |
+| 3. When Does OpenClaw Write to MEMORY.md on Its Own? | Three mechanisms: initiative-based (AGENTS.md prompt), pre-compaction flush (programmatic threshold), session-end hook (/new command) |
+| 4. Slash Commands: Does the LLM See the "/command"? | Three paths: built-in (no LLM), skill with dispatch (no LLM), skill without dispatch (LLM sees rewritten message). ASCII flow diagram |
+| 5. Important Points (5a-5k) | System prompt rebuilt each run, bootstrap files are self-modifying, MEMORY.md dual roles, skill enforcement, token costs, subagent stripped prompt, truncation, memory read-only in system prompt, prompt modes, heartbeat mechanics, LLM can't distinguish prompt sources |
+| 6-7. End-to-End Examples | Memory recall query (3 LLM calls), slash command dispatch (0 LLM calls) |
+| 8. Where Everything Lives on Disk | Full `~/.openclaw/` directory tree, workspace resolution priority, skills directories (4 sources), config file location |
+
+### Bootstrap Doc Corrections: `bootstrap.md`
+
+**File**: `openclaw-agent/design_docs/bootstrap.md`
+
+Three corrections to the file table + one new section:
+
+| Change | Before | After |
+|--------|--------|-------|
+| IDENTITY.md row | "name, version, branding" | Actual fields: Name, Creature, Vibe, Emoji, Avatar |
+| HEARTBEAT.md row | "periodic/scheduled task instructions" | "user-editable task checklist (data file, not instructions)" |
+| BOOTSTRAP.md row | "general project bootstrap" | "first-run onboarding ritual, deleted after use" |
+| New section | — | "Self-Modifying: Bootstrap Files Are Living Documents" — table of which files are self-modifying, feedback loop explanation, distinction from MEMORY.md |
+
+### Key Findings
+
+- **Heartbeat turns** are timer-triggered synthetic user messages (default 30 min), not real user interactions. `startHeartbeatRunner()` uses `setTimeout` scheduler, calls `getReplyFromConfig()` (same as real messages). Smart skips for empty HEARTBEAT.md, quiet hours, in-flight requests.
+- **AGENTS.md vs HEARTBEAT.md**: AGENTS.md defines heartbeat *behavior* (always loaded). HEARTBEAT.md is a user-editable *task checklist* (empty by default).
+- **BOOTSTRAP.md** is a one-time onboarding ritual that the agent deletes after setup — not a persistent config file.
+- **Bootstrap files are self-modifying**: AGENTS.md explicitly tells the agent to update its own files with learned lessons, conventions, and mistakes. This is why files accumulate interaction-specific details over time.
+
+---
+
 ## Design Doc Updates + Presentation — COMPLETED (2026-02-27/28)
 
 ### Project Summary

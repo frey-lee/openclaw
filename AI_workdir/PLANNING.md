@@ -1,21 +1,16 @@
 # Project Planning
 
-## Current Focus: All Major Tasks Complete
+## Repos
 
-**Repos:**
-- openclaw: `C:\Users\User_DAIP\Work\Transcribe\Code\openclaw` (branch: `experimental`)
-- openclaw-agent: `C:\Users\User_DAIP\Work\Transcribe\Code\openclaw-agent` (branch: `feat--streamlit-bridge`)
+- **openclaw**: `C:\Users\User_DAIP\Work\Transcribe\Code\openclaw` (branch: `experimental`)
+- **openclaw-agent**: `C:\Users\User_DAIP\Work\Transcribe\Code\openclaw-agent` (branch: `master`, merged from `feat--streamlit-bridge`)
+  - Remotes: `origin` (personal gitlab), `team` (team gitlab)
 
-**Plan file**: `C:\Users\User_DAIP\.claude\plans\atomic-zooming-feather.md` — COMPLETED
+## Current Status
 
-### Completed Tasks (2026-02-27/28)
+All major work complete. Bridge is functionally complete, design docs cover all major subsystems (15 docs total), presentation delivered. See `COMPLETED.md` for full archive.
 
-1. **Git Cleanup** — both repos cleaned up, `feat--prune-and-subagents` deleted, `v2026.2.17` checked out locally
-2. **v2026.2.17 Changelog** — `openclaw-agent/design_docs/v2026-changelog.md` written (4,152 commits analyzed)
-3. **Memory Design Doc Update** — `openclaw-agent/design_docs/memory.md` v2026.2.17 section appended (temporal decay, QMD, sync modules, progressive building changes, LanceDB updates)
-4. **Subagents Design Doc Update** — `openclaw-agent/design_docs/subagents.md` v2026.2.17 section appended (subagents-tool.ts, session access controls, cron integration, config structure)
-5. **Presentation Content** — `openclaw/AI_workdir/presentation/` with `presentation.md`, `image-prompts.md`, and user-edited versions (`presentation_v2.md`, `presentation_v2_edit.md`)
-6. **Google Slides** — user created actual slides from presentation content
+**Design docs** (`openclaw-agent/design_docs/`): bootstrap, error-handling, event-subscription, hooks, memory, prompts, sandbox, session-management, skills, subagents, system-prompt, tools, v2026-changelog (+ 2 legacy from initial extraction)
 
 ---
 
