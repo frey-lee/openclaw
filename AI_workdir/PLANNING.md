@@ -8,9 +8,11 @@
 
 ## Current Status
 
-All major work complete. Bridge is functionally complete, design docs cover all major subsystems (15 docs total), presentation delivered. See `COMPLETED.md` for full archive.
+All major work complete. Bridge is functionally complete, design docs cover all major subsystems (16 docs total), presentation delivered, v2026.3.1 changelog analyzed. See `COMPLETED.md` for full archive.
 
-**Design docs** (`openclaw-agent/design_docs/`): bootstrap, error-handling, event-subscription, hooks, memory, prompts, sandbox, session-management, skills, subagents, system-prompt, tools, v2026-changelog (+ 2 legacy from initial extraction)
+**Design docs** (`openclaw-agent/design_docs/`): acp, bootstrap, error-handling, event-subscription, hooks, memory, prompts, sandbox, session-management, skills, subagents, system-prompt, tools, v2026-changelog (+ 2 legacy from initial extraction)
+
+**Workspace**: `openclaw_workspace/` is the single agent workspace directory. Bootstrap files auto-seeded via `ensureAgentWorkspace()` on bridge startup. Repo code lives in `openclaw_workspace/codebase/`.
 
 ---
 

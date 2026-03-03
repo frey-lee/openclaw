@@ -1,5 +1,96 @@
 # Completed Work
 
+## ACP Design Doc — COMPLETED (2026-03-03)
+
+### Project Summary
+Created comprehensive design document for the ACP (Agent Client Protocol) subsystem introduced in v2026.3.1.
+
+**File**: `openclaw-agent/design_docs/acp.md`
+
+### Contents
+| Section | Topic |
+|---------|-------|
+| Overview | Dual purpose: IDE bridge (external → OpenClaw) + control plane (OpenClaw → external agents) |
+| Architecture | Full-stack diagram from IDE clients through bridge, gateway, control plane, ACPX extension to external agent runtimes |
+| ACP Bridge | Translator, session mapper, event mapper, NDJSON/JSON-RPC 2.0 protocol flow, security (2MB cap, rate limiting) |
+| Control Plane | `AcpSessionManager` singleton, `SessionActorQueue` (per-session serialization), `RuntimeCache` (idle TTL eviction), identity reconciliation (ensure → status → resolved), runtime controls |
+| Runtime Interface | Pluggable `AcpRuntime` interface, event types, 7 error codes, backend registry |
+| ACPX Extension | Drives external agents via `acpx` CLI child processes, agent aliases (pi/claude/codex/opencode/gemini), config, version pinning |
+| ACP Router Skill | Intent detection, mode selection, `sessions_spawn` integration |
+| Policy & Security | Three policy gates (`acp.enabled`, `acp.dispatch.enabled`, `acp.allowedAgents`), permission modes, spawn cleanup |
+| File Inventory | All 33 source files across 4 directories |
+
+### Research Method
+Read source files from v2026.3.1 branch using `git show v2026.3.1:<path>` without checking out (current branch is `experimental`). Researched 6 parallel agents covering control plane, thread bindings, commits/docs, types, runtime, and ACPX extension.
+
+---
+
+## v2026.3.1 Changelog — COMPLETED (2026-03-03)
+
+### Project Summary
+Analyzed 3,625 commits between v2026.2.17 and v2026.3.1 (4,160 files, +369,918 / -109,990 lines) and appended comprehensive changelog to `openclaw-agent/design_docs/v2026-changelog.md`.
+
+**File**: `openclaw-agent/design_docs/v2026-changelog.md` (v2026.3.1 section appended)
+
+### Research Method
+6 parallel research agents covering: memory, subagents, tools/sandbox/exec, hooks/bootstrap/skills, session/prompt/error, security/gateway/providers. Each agent ran git diff/log commands scoped to their topic area.
+
+### Key Themes Documented
+1. **Security sweep** (106+ commits) — TOCTOU, symlink/hardlink, SSRF, sandbox inheritance, exec approval tightening
+2. **ACP** — entirely new ~19,000-line inter-agent cooperation protocol
+3. **Thread-bound subagents on Discord** — ~12,200 lines
+4. **Memory expansion** — Mistral embeddings, mcporter/MCP daemon, 7-language query expansion
+5. **Claude 4.6 adaptive thinking** — new `"adaptive"` thinking mode
+6. **Lightweight bootstrap** — slim context for heartbeat/cron
+7. **Gateway health probes** — `/healthz` and `/readyz`
+8. **Android expansion** — ElevenLabs TTS, 7 new device handlers, complete onboarding
+9. **Feishu major expansion** — rich text, docx ops, reactions, thread routing
+10. **2 breaking changes** — versioned approval contract removed, google-antigravity provider removed
+
+---
+
+## Workspace Architecture Restructure — COMPLETED (2026-03-02)
+
+### Project Summary
+Fixed multiple issues preventing the openclaw-agent bridge from running correctly: Windows exec compatibility, bootstrap file location, workspace switching, and stale session cleanup.
+
+**Repos**: openclaw-agent, openclaw
+
+### Fixes Applied
+
+**1. Windows exec compatibility (`pathPrepend`)**
+- Added `pathPrepend: ["C:\\Program Files\\Git\\usr\\bin"]` to exec config on Windows
+- Enables Unix commands (ls, grep, find) in agent subshells via Git Bash utilities
+
+**2. Bootstrap file architecture**
+- Problem: Bootstrap files were stranded in `openclaw-agent/.openclaw/workspace/` while agent worked in `openclaw_workspace/`
+- Fix: Set workspace from `WORKSPACE_DIR` env var at startup, call `ensureAgentWorkspace()` to auto-seed bootstrap templates
+- Migrated 7 template files from `openclaw/docs/reference/templates/` to `openclaw-agent/docs/reference/templates/`
+- Removed runtime workspace switching from server.ts
+
+**3. Stale session cleanup**
+- Deleted `openclaw_workspace/.openclaw-sessions/` containing old transcripts from failed runs
+
+**4. AGENTS.md name collision**
+- Repo's 23.5K AGENTS.md conflicted with bootstrap AGENTS.md template
+- User moved entire repo into `openclaw_workspace/codebase/` subdirectory
+
+### Files Modified (openclaw-agent)
+| File | Change |
+|------|--------|
+| `src/bridge/config.ts` | Added `WORKSPACE_DIR` env var, `pathPrepend` for Windows |
+| `src/bridge/server.ts` | Added `ensureAgentWorkspace` call at startup, removed workspace switching |
+| `app/app.py` | Removed `project_dir` input, workspace parameter from `send_message` |
+| `.env.sample` | Added `WORKSPACE_DIR` documentation |
+| `.env` | Appended `WORKSPACE_DIR=../openclaw_workspace` |
+| `docs/reference/templates/` | 7 template files created (AGENTS, BOOTSTRAP, HEARTBEAT, IDENTITY, SOUL, TOOLS, USER) |
+
+### Files Deleted
+- `openclaw-agent/.openclaw/workspace/` (entire directory)
+- `openclaw_workspace/.openclaw-sessions/` (stale sessions)
+
+---
+
 ## OpenClaw Repository Analysis - COMPLETED (2026-02-05)
 
 ### Project Summary
